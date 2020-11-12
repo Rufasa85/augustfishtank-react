@@ -24,6 +24,14 @@ function App() {
           tanks:profileData.Tanks,
           isLoggedIn:true
         })
+      } else {
+        localStorage.removeItem("token");
+        setProfileState({
+          name:"",
+          email:"",
+          tanks:[],
+          isLoggedIn:false
+        })
       }
     }
     )
