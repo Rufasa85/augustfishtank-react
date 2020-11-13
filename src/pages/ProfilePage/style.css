@@ -1,0 +1,5 @@
+.TanksWrapper,  .FishWrapper {
+    display: flex;
+    flex-wrap: wrap;
+  }
+

@@ -5,6 +5,9 @@ import "./App.css"
 import {BrowserRouter as Router, Route, Switch } from "react-router-dom"
 import Home from "./pages/Home";
 import TankDetail from "./pages/TankDetail";
+import NavBar from "./components/NavBar";
+import ProfilePage from "./pages/ProfilePage";
+import FishDetail from "./pages/FishDetail";
 
 function App() {
   const [loginFormState, setLoginFormState] = useState({
@@ -17,10 +20,14 @@ function App() {
     email:"",
     tanks:[],
     token:"",
+    id:"",
     isLoggedIn:false
   })
 
-  useEffect(()=>{
+
+  useEffect(fetchUserData,[])
+
+  function fetchUserData(){
     const token = localStorage.getItem("token");
     API.getProfile(token).then(profileData=>{
       if(profileData){
@@ -28,7 +35,9 @@ function App() {
           name:profileData.name,
           email:profileData.email,
           tanks:profileData.Tanks,
+          fish:profileData.Fishes,
           token:token,
+          id:profileData.id,
           isLoggedIn:true
         })
       } else {
@@ -38,12 +47,13 @@ function App() {
           email:"",
           tanks:[],
           token:"",
+          id:"",
           isLoggedIn:false
         })
       }
     }
     )
-  },[])
+  }
 
   const inputChange = event=>{
     const {name,value}=event.target;
@@ -62,22 +72,37 @@ function App() {
          name:profileData.name,
          email:profileData.email,
          tanks:profileData.Tanks,
+         id:profileData.id,
          isLoggedIn:true
        })
       })
     })
   }
 
+  const deleteTank = id=>{
+    API.deleteTank(profileState.token,id).then(data=>{
+      fetchUserData();
+    })
+  }
+  const deleteFish = id=>{
+    API.deleteFish(profileState.token,id).then(data=>{
+      fetchUserData();
+    })
+  }
+
+
   return (
     <div className="App">
       <Router>
-      <form onSubmit={formSubmit}>
-        <input onChange = {inputChange} value={loginFormState.email} type='text' name="email" placeholder="email"/>
-        <input onChange = {inputChange} value={loginFormState.password} type='password' name="password" />
-        <input type="submit" value="login"/>
-      </form>
+        <NavBar profile={profileState} inputChange={inputChange} loginFormState={loginFormState} formSubmit={formSubmit}/>
       <Route exact path="/">
-        <Home  profile={profileState}/>
+        <Home/>
+      </Route>
+      <Route exact path="/profile">
+        <ProfilePage  profile={profileState} fetchData= {fetchUserData} delTank = {deleteTank} delFish={deleteFish}/>
+      </Route>
+      <Route path="/fish/:id">
+       <FishDetail/>
       </Route>
       <Route path="/tanks/:id">
         <TankDetail profile={profileState}/>

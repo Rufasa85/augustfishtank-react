@@ -3,10 +3,12 @@ import {useParams} from "react-router-dom";
 import API from "../../utils/API"
 import "./style.css"
 import Fish from "../../components/Fish"
+import AddFishForm from '../../components/AddFishForm';
 
 export default function TankDetail(props) {
     const [tank, setTank] = useState({
         name:"",
+        userId:"",
         fish:[]
     })
 
@@ -23,7 +25,8 @@ export default function TankDetail(props) {
 
                 setTank({
                     name:tankData.name,
-                    fish:tankData.Fishes
+                    fish:tankData.Fishes,
+                    userId:tankData.UserId
                 })
             }
         })
@@ -47,7 +50,8 @@ export default function TankDetail(props) {
                 if(tankData){
                     setTank({
                         name:tankData.name,
-                        fish:tankData.Fishes
+                        fish:tankData.Fishes,
+                        userId:tankData.UserId
                     })
                 }
             })
@@ -62,12 +66,7 @@ export default function TankDetail(props) {
     return (
         <>
         <h1>{tank.name}</h1>
-            <form onSubmit={handleFormSubmit}>
-                <input onChange={handleInputChange} value={fishFormState.name}type="text" name="name" placeholder="name"/>
-                <input onChange={handleInputChange} value={fishFormState.width}type="number" name="width" />
-                <input onChange={handleInputChange} value={fishFormState.color}type="color" name="color" />
-                <input type="submit" value="add fish!"/>
-            </form>
+            {props.profile.id===tank.userId?<AddFishForm handleFormSubmit={handleFormSubmit} handleInputChange={handleInputChange} fishFormState={fishFormState}/>:<h1>You can't add fish here!</h1>}
             <div className="TankDetail">
             {tank.fish.map(fishObj=><Fish name={fishObj.name} color={fishObj.color} width={fishObj.width}/>)}
         </div>
