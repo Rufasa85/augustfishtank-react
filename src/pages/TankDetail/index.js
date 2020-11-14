@@ -68,7 +68,7 @@ export default function TankDetail(props) {
         <h1>{tank.name}</h1>
             {props.profile.id===tank.userId?<AddFishForm handleFormSubmit={handleFormSubmit} handleInputChange={handleInputChange} fishFormState={fishFormState}/>:<h1>You can't add fish here!</h1>}
             <div className="TankDetail">
-            {tank.fish.map(fishObj=><Fish name={fishObj.name} color={fishObj.color} width={fishObj.width}/>)}
+            {tank.fish.map(fishObj=><Fish key={fishObj.id} name={fishObj.name} color={fishObj.color} width={fishObj.width}/>)}
         </div>
         <div className="seaFloor"></div>
         </>
